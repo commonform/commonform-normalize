@@ -1,12 +1,7 @@
 /* jshint mocha: true */
 var expect = require('chai').expect;
-var hash = require('commonform-hash');
-var serialize = require('commonform-serialize');
+var hash = require('commonform-hash').hash;
 var normalize = require('..');
-
-var digestOf = function(form) {
-  return hash.hash(serialize.stringify(form));
-};
 
 var form = function(content) {
   return {content: [content]};
@@ -21,9 +16,9 @@ var B = form('B');
 B.conspicuous = 'true';
 var C = form('C');
 
-var A_D = digestOf(A);
-var B_D = digestOf(B);
-var C_D = digestOf(C);
+var A_D = hash(A);
+var B_D = hash(B);
+var C_D = hash(C);
 
 describe('normalization', function() {
   it('lists required sub-forms only once', function() {
@@ -44,10 +39,10 @@ describe('normalization', function() {
           content: [
             {
               summary: 'First',
-              form: digestOf({content: [{form: A_D}, {form: B_D}]})
+              form: hash({content: [{form: A_D}, {form: B_D}]})
             },
             {
-              form: digestOf({content: [{form: B_D}, {form: C_D}]})
+              form: hash({content: [{form: B_D}, {form: C_D}]})
             }
           ]
         }

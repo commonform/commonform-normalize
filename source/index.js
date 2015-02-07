@@ -1,5 +1,4 @@
-var hash = require('commonform-hash');
-var serialize = require('commonform-serialize');
+var hash = require('commonform-hash').hash;
 var validate = require('commonform-validate');
 
 var normalize = function(nestedForm, list) {
@@ -23,7 +22,7 @@ var normalize = function(nestedForm, list) {
   }
   // Put the computest digest to a property of the form so subsequent
   // logic needn't hash again.
-  newForm.digest = hash.hash(serialize.stringify(newForm));
+  newForm.digest = hash(newForm);
   list.push(newForm);
   return [newForm, list];
 };
