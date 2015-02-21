@@ -1,51 +1,69 @@
+var Immutable = require('immutable');
 var hash = require('commonform-hash').hash;
-var validate = require('commonform-validate');
+var predicate = require('commonform-predicate');
 
-var normalize = function(nestedForm, list) {
-  var content = nestedForm.content;
-  var newContent = content.reduce(function(content, element) {
-    if (validate.nestedSubForm(element)) {
-      var results = normalize(element.form, list);
-      var form = results[0];
-      var newSubForm = {form: form.digest};
-      if (element.hasOwnProperty('summary')) {
-        newSubForm.summary = element.summary;
+var map = Immutable.Map.bind(Immutable);
+var fromJS = Immutable.fromJS.bind(Immutable);
+var emptyList = Immutable.List();
+
+var normalize = function(nestedForm, formsList) {
+  var content = nestedForm.get('content');
+  var results = content.reduce(function(output, element) {
+    if (predicate.subForm(element)) {
+      var results = normalize(element.get('form'), output.get('forms'));
+      var subForm = results.get('object');
+      var newSubForm = {
+        form: subForm.get('digest')
+      };
+      if (element.has('summary')) {
+        newSubForm.summary = element.get('summary');
       }
-      return content.concat(newSubForm);
+      return map({
+        forms: results.get('forms'),
+        content: output.get('content').push(fromJS(newSubForm))
+      });
     } else {
-      return content.concat(element);
+      return output.update('content', function(content) {
+        return content.push(element);
+      });
     }
-  }, []);
-  var newForm = {content: newContent};
-  if (nestedForm.hasOwnProperty('conspicuous')) {
-    newForm.conspicuous = nestedForm.conspicuous;
+  }, map({
+    forms: formsList,
+    content: emptyList
+  }));
+
+  var newForm = {
+    content: results.get('content')
+  };
+  if (nestedForm.has('conspicuous')) {
+    newForm.conspicuous = nestedForm.get('conspicuous');
   }
-  // Put the computest digest to a property of the form so subsequent
+  var newImmutable = fromJS(newForm);
+  // Put the computed digest to a property of the object so subsequent
   // logic needn't hash again.
-  newForm.digest = hash(newForm);
-  list.push(newForm);
-  return [newForm, list];
+  var withDigest = newImmutable.set('digest', hash(newImmutable));
+  return map({
+    object: withDigest,
+    forms: results.get('forms').push(withDigest)
+  });
 };
 
 module.exports = function(nestedForm) {
-  if (!validate.nestedForm(nestedForm)) {
-    throw new Error('Invalid nested form');
-  }
   // Keep track of forms seen, so duplicates can be omitted.
   var digestsSeen = [];
-  return normalize(nestedForm, [])[1]
+  return normalize(nestedForm, emptyList)
+    .get('forms')
     .reduce(function(results, form) {
-      var digest = form.digest;
-      // Delete the digest property so objects end up valid forms.
-      delete form.digest;
+      var digest = form.get('digest');
       // Duplicate?
       if (digestsSeen.indexOf(digest) > -1) {
         return results;
       } else {
         digestsSeen.push(digest);
-        return results.concat(form);
+        // Delete the digest property so objects end up valid forms.
+        return results.push(form.delete('digest'));
       }
-    }, []);
+    }, emptyList);
 };
 
 module.exports.version = '0.1.1';
