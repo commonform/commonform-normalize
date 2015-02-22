@@ -1,7 +1,7 @@
 /* jshint mocha: true */
 var Immutable = require('immutable');
 var expect = require('chai').expect;
-var hash = require('commonform-hash').hash;
+var hash = require('commonform-hash');
 var normalize = require('..');
 
 var fromJS = Immutable.fromJS.bind(Immutable);

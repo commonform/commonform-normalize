@@ -1,5 +1,5 @@
 var Immutable = require('immutable');
-var hash = require('commonform-hash').hash;
+var hash = require('commonform-hash');
 var predicate = require('commonform-predicate');
 
 var map = Immutable.Map.bind(Immutable);
