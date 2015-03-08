@@ -9,11 +9,11 @@ var emptyList = Immutable.List();
 var normalize = function(nestedForm, formsList) {
   var content = nestedForm.get('content');
   var results = content.reduce(function(output, element) {
-    if (predicate.subForm(element)) {
+    if (predicate.inclusion(element)) {
       var results = normalize(element.get('form'), output.get('forms'));
-      var subForm = results.get('object');
+      var inclusion = results.get('object');
       var newSubForm = {
-        form: subForm.get('digest')
+        form: inclusion.get('digest')
       };
       if (element.has('summary')) {
         newSubForm.summary = element.get('summary');
