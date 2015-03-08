@@ -66,4 +66,4 @@ module.exports = function(nestedForm) {
     }, emptyList);
 };
 
-module.exports.version = '0.2.2';
+module.exports.version = '0.3.0';
