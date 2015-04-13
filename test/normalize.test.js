@@ -1,56 +1,70 @@
 /* jshint mocha: true */
-var Immutable = require('immutable');
 var expect = require('chai').expect;
 var hash = require('commonform-hash');
 var normalize = require('..');
 
-var fromJS = Immutable.fromJS.bind(Immutable);
+var formA = {content:['A']};
+var formADigest = hash(formA);
 
-var form = function(content) {
-  return fromJS({content: [content]});
-};
-
-var subForm = function(form) {
-  return {form: form};
-};
-
-var A = form('A');
-var B = fromJS({
+var formB = {
   content: ['B'],
-  conspicuous: 'true'
-});
-var C = form('C');
+  conspicuous: 'yes'
+};
+var formBDigest = hash(formB);
 
-var A_D = hash(A);
-var B_D = hash(B);
-var C_D = hash(C);
+var formC = {content: ['C']};
+var formCDigest = hash(formC);
+
+var formD = {content: ['D']};
+var formDDigest = hash(formD);
 
 describe('normalization', function() {
-  it('lists required sub-forms only once', function() {
-    expect(normalize(fromJS({
+  it('outputs a digest-to-form map in normalized form', function() {
+    var result = {};
+    result[formADigest] = formA;
+    result[formBDigest] = formB;
+    result[formCDigest] = formC;
+    result[formDDigest] = formD;
+
+    var first = {
+      content: [{digest: formADigest}, {digest: formBDigest}]
+    };
+    var firstDigest = hash(first);
+    result[firstDigest] = first;
+
+    var second = {
+      content: [{digest: formCDigest}, {digest: formDDigest}]
+    };
+    var secondDigest = hash(second);
+    result[secondDigest] = second;
+
+    var root = {
       content: [
-        {summary: 'First', form: {content: [subForm(A), subForm(B)]}},
-        {form: {content: [subForm(B), subForm(C)]}}
-      ]
-    })).toJS())
-      .to.eql([
-        A.toJS(),
-        B.toJS(),
-        {content: [{form: A_D}, {form: B_D}]},
-        // B does not appear again
-        C.toJS(),
-        {content: [{form: B_D}, {form: C_D}]},
         {
-          content: [
-            {
-              summary: 'First',
-              form: hash(fromJS({content: [{form: A_D}, {form: B_D}]}))
-            },
-            {
-              form: hash(fromJS({content: [{form: B_D}, {form: C_D}]}))
+          heading: 'First',
+          digest: firstDigest
+        },
+        {digest: secondDigest}
+      ]
+    };
+    result[hash(root)] = root;
+
+    expect(
+      normalize({
+        content: [
+          {
+            heading: 'First',
+            form: {
+              content:[{form: formA}, {form: formB}]
             }
-          ]
-        }
-      ]);
+          },
+          {
+            form: {
+              content: [{form: formC}, {form: formD}]
+            }
+          }
+        ]
+      }
+    )).to.eql(result);
   });
 });

@@ -1,69 +1,53 @@
-var Immutable = require('immutable');
+var clone = require('clone');
 var hash = require('commonform-hash');
 var predicate = require('commonform-predicate');
 
-var map = Immutable.Map.bind(Immutable);
-var fromJS = Immutable.fromJS.bind(Immutable);
-var emptyList = Immutable.List();
-
-var normalize = function(nestedForm, formsList) {
-  var content = nestedForm.get('content');
+var normalize = function(form, formsList) {
+  var content = form.content;
   var results = content.reduce(function(output, element) {
-    if (predicate.inclusion(element)) {
-      var results = normalize(element.get('form'), output.get('forms'));
-      var inclusion = results.get('object');
-      var newSubForm = {
-        form: inclusion.get('digest')
+    if (predicate.child(element)) {
+      var results = normalize(element.form, output.forms);
+      var child = results.object;
+      var newChild = {
+        digest: child.digest
       };
-      if (element.has('summary')) {
-        newSubForm.summary = element.get('summary');
+      if (element.hasOwnProperty('heading')) {
+        newChild.heading = element.heading;
       }
-      return map({
-        forms: results.get('forms'),
-        content: output.get('content').push(fromJS(newSubForm))
-      });
+      output.content.push(newChild);
+      return {
+        forms: results.forms,
+        content: output.content
+      };
     } else {
-      return output.update('content', function(content) {
-        return content.push(element);
-      });
+      output.content.push(element);
+      return output;
     }
-  }, map({
+  }, {
     forms: formsList,
-    content: emptyList
-  }));
-
-  var newForm = {
-    content: results.get('content')
-  };
-  if (nestedForm.has('conspicuous')) {
-    newForm.conspicuous = nestedForm.get('conspicuous');
-  }
-  var newImmutable = fromJS(newForm);
-  // Put the computed digest to a property of the object so subsequent
-  // logic needn't hash again.
-  var withDigest = newImmutable.set('digest', hash(newImmutable));
-  return map({
-    object: withDigest,
-    forms: results.get('forms').push(withDigest)
+    content: []
   });
+
+  var newForm = {content: results.content};
+  if (form.hasOwnProperty('conspicuous')) {
+    newForm.conspicuous = form.conspicuous;
+  }
+  newForm.digest = hash(newForm);
+  results.forms.push(newForm);
+  return {
+    object: newForm,
+    forms: results.forms
+  };
 };
 
-module.exports = function(nestedForm) {
-  // Keep track of forms seen, so duplicates can be omitted.
-  var digestsSeen = [];
-  return normalize(nestedForm, emptyList)
-    .get('forms')
-    .reduce(function(results, form) {
-      var digest = form.get('digest');
-      // Duplicate?
-      if (digestsSeen.indexOf(digest) > -1) {
-        return results;
-      } else {
-        digestsSeen.push(digest);
-        // Delete the digest property so objects end up valid forms.
-        return results.push(form.delete('digest'));
-      }
-    }, emptyList);
+module.exports = function(form) {
+  var cloned = clone(form);
+  return normalize(cloned, []).forms.reduce(function(results, form) {
+    var digest = form.digest;
+    delete form.digest;
+    results[digest] = form;
+    return results;
+  }, {});
 };
 
-module.exports.version = '0.3.0';
+module.exports.version = '1.0.0-rc1';
