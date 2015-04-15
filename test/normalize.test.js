@@ -47,7 +47,9 @@ describe('normalization', function() {
         {digest: secondDigest}
       ]
     };
+    var rootHash = hash(root);
     result[hash(root)] = root;
+    result.root = rootHash;
 
     expect(
       normalize({

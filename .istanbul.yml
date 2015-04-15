@@ -5,9 +5,3 @@ check:
         lines: 100
         branches: 100
         functions: 100
-reporting:
-    watermarks:
-        statements: [50, 80]
-        lines: [50, 80]
-        functions: [50, 80]
-        branches: [50, 80]

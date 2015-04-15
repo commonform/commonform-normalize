@@ -42,10 +42,17 @@ var normalize = function(form, formsList) {
 
 module.exports = function(form) {
   var cloned = clone(form);
-  return normalize(cloned, []).forms.reduce(function(results, form) {
+  var normalized = normalize(cloned, []).forms;
+  // Note the index of the last form in the list, the root.
+  var rootIndex = normalized.length - 1;
+  return normalized.reduce(function(results, form, index) {
     var digest = form.digest;
     delete form.digest;
     results[digest] = form;
+    // Set the root digest to the 'root' property.
+    if (index === rootIndex) {
+      results.root = digest;
+    }
     return results;
   }, {});
 };
