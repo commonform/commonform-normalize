@@ -28,6 +28,9 @@
   ],
   "license": "Apache-2.0",
   "main": "commonform-normalize.js",
+  "peerDependencies": {
+    "commonform": "1.x"
+  },
   "repository": "commonform/commonform-normalize",
   "scripts": {
     "check": "check-versions --check-module",
