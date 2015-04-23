@@ -27,7 +27,7 @@
     "normalization"
   ],
   "license": "Apache-2.0",
-  "main": "commonform-normalize.js",
+  "main": "source/index",
   "peerDependencies": {
     "commonform": "1.x"
   },
@@ -35,7 +35,7 @@
   "scripts": {
     "check": "check-versions --check-module",
     "coverage": "istanbul cover _mocha && istanbul check-coverage coverage/coverage.json",
-    "lint": "jshint commonform-normalize.js test && jscs commonform-normalize.js test",
+    "lint": "jshint source test && jscs source test",
     "pre-commit": "npm run lint && npm run check && npm run coverage",
     "test": "mocha",
     "travis-ci": "npm run pre-commit"
