@@ -3,20 +3,14 @@
   "description": "normalize Common Forms",
   "version": "0.4.0",
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (http://kemitchell.com)",
-  "bugs": "https://github.com/commonform/commonform-normalize/issues",
   "dependencies": {
     "commonform-hash": "^0.4.0",
     "commonform-predicate": "^0.4.0"
   },
   "devDependencies": {
-    "chai": "^2.2.0",
-    "check-versions": "^1.0.0",
-    "istanbul": "^0.3.13",
-    "jscs": "^1.12.0",
-    "jshint": "^2.7.0",
-    "mocha": "^2.2.4"
+    "defence-cli": "~1.0.1",
+    "replace-require-self": "~1.0.0"
   },
-  "homepage": "https://commonform.github.io",
   "keywords": [
     "contracts",
     "document assembly",
@@ -26,17 +20,11 @@
     "normalization"
   ],
   "license": "Apache-2.0",
-  "main": "source/index",
   "peerDependencies": {
     "commonform": "1.x"
   },
   "repository": "commonform/commonform-normalize",
   "scripts": {
-    "check": "check-versions --check-module",
-    "coverage": "istanbul check-coverage --config .dotfiles/istanbul.yml coverage/coverage.json",
-    "lint": "jshint --config .dotfiles/jshint.json source test && jscs --config .dotfiles/jscs.json source test",
-    "precommit": "npm run check && npm run lint && npm run coverage",
-    "precoverage": "istanbul cover --config .dotfiles/istanbul.yml -- _mocha --opts .dotfiles/mocha.opts",
-    "test": "mocha --opts .dotfiles/mocha.opts"
+    "test": "defence README.md | replace-require-self | node"
   }
 }
