@@ -1,4 +1,3 @@
-var clone = require('clone');
 var hash = require('commonform-hash');
 var predicate = require('commonform-predicate');
 
@@ -41,8 +40,7 @@ var normalize = function(form, formsList) {
 };
 
 module.exports = function(form) {
-  var cloned = clone(form);
-  var normalized = normalize(cloned, []).forms;
+  var normalized = normalize(form, []).forms;
   // Note the index of the last form in the list, the root.
   var rootIndex = normalized.length - 1;
   return normalized.reduce(function(results, form, index) {
