@@ -54,5 +54,3 @@ module.exports = function(form) {
     return results;
   }, {});
 };
-
-module.exports.version = '0.4.0';
