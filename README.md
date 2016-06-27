@@ -4,18 +4,19 @@ Produces a digest-to-object map with an extra `.root` property containing the di
 var hash = require('commonform-hash')
 var normalize = require('commonform-normalize')
 
-var formA = { content: [ 'A' ] }
+var formA = {content: [ 'A' ]}
 var formADigest = hash(formA)
 
 var formB = {
-  content: [ 'B' ],
-  conspicuous: 'yes' }
+  content: ['B'],
+  conspicuous: 'yes'
+}
 var formBDigest = hash(formB)
 
-var formC = { content: [ 'C' ] }
+var formC = {content: ['C']}
 var formCDigest = hash(formC)
 
-var formD = { content: [ 'D' ] }
+var formD = {content: ['D']}
 var formDDigest = hash(formD)
 
 var result = {}
@@ -26,23 +27,28 @@ result[formDDigest] = formD
 
 var first = {
   content: [
-    { digest: formADigest },
-    { digest: formBDigest } ] }
+    {digest: formADigest},
+    {digest: formBDigest}
+  ]
+}
 var firstDigest = hash(first)
 result[firstDigest] = first
 
 var second = {
   content: [
-    { digest: formCDigest },
-    { digest: formDDigest } ] }
+    {digest: formCDigest},
+    {digest: formDDigest}
+  ]
+}
 var secondDigest = hash(second)
 result[secondDigest] = second
 
 var root = {
   content: [
-    { heading: 'First',
-      digest: firstDigest },
-    { digest: secondDigest } ] }
+    {heading: 'First', digest: firstDigest},
+    {digest: secondDigest}
+  ]
+}
 var rootHash = hash(root)
 result[hash(root)] = root
 result.root = rootHash
@@ -50,14 +56,25 @@ result.root = rootHash
 require('assert').deepEqual(
   normalize({
     content: [
-      { heading: 'First',
+      {
+        heading: 'First',
         form: {
           content: [
-            { form: formA },
-            { form: formB } ] } },
-      { form: {
+            {form: formA},
+            {form: formB}
+          ]
+        }
+      },
+      {
+        form: {
           content: [
-            { form: formC },
-            { form: formD } ] } } ] }),
-  result)
+            {form: formC},
+            {form: formD}
+          ]
+        }
+      }
+    ]
+  }),
+  result
+)
 ```
