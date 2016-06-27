@@ -43,14 +43,14 @@ var second = {
 var secondDigest = hash(second)
 result[secondDigest] = second
 
-var root = {
+var rootForm = {
   content: [
     {heading: 'First', digest: firstDigest},
     {digest: secondDigest}
   ]
 }
-var rootHash = hash(root)
-result[hash(root)] = root
+var rootHash = hash(rootForm)
+result[hash(rootForm)] = rootForm
 result.root = rootHash
 
 require('assert').deepEqual(
