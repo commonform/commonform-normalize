@@ -20,7 +20,7 @@
     "markup",
     "normalization"
   ],
-  "license": "Apache-2.0",
+  "license": "BlueOak-1.0.0",
   "repository": "commonform/commonform-normalize",
   "files": [
     "index.js"
