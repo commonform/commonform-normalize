@@ -22,8 +22,11 @@
   ],
   "license": "Apache-2.0",
   "repository": "commonform/commonform-normalize",
+  "files": [
+    "index.js"
+  ],
   "scripts": {
-    "test": "defence README.md | replace-require-self | node",
+    "test": "defence README.md | replace-require-self | node && node test.js",
     "lint": "standard"
   }
 }

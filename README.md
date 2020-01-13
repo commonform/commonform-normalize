@@ -1,80 +1,36 @@
 Produces a digest-to-object map with an extra `.root` property containing the digest of the root of the Common Form.
 
 ```javascript
-var hash = require('commonform-hash')
 var normalize = require('commonform-normalize')
+var assert = require('assert')
 
-var formA = {content: [ 'A' ]}
-var formADigest = hash(formA)
-
-var formB = {
-  content: ['B'],
-  conspicuous: 'yes'
-}
-var formBDigest = hash(formB)
-
-var formC = {content: ['C']}
-var formCDigest = hash(formC)
-
-var formD = {content: ['D']}
-var formDDigest = hash(formD)
-
-var result = {}
-result[formADigest] = formA
-result[formBDigest] = formB
-result[formCDigest] = formC
-result[formDDigest] = formD
-
-var first = {
-  content: [
-    {digest: formADigest},
-    {digest: formBDigest}
-  ]
-}
-var firstDigest = hash(first)
-result[firstDigest] = first
-
-var second = {
-  content: [
-    {digest: formCDigest},
-    {digest: formDDigest}
-  ]
-}
-var secondDigest = hash(second)
-result[secondDigest] = second
-
-var rootForm = {
-  content: [
-    {heading: 'First', digest: firstDigest},
-    {digest: secondDigest}
-  ]
-}
-var rootHash = hash(rootForm)
-result[hash(rootForm)] = rootForm
-result.root = rootHash
-
-require('assert').deepEqual(
+assert.deepStrictEqual(
   normalize({
     content: [
-      {
-        heading: 'First',
-        form: {
-          content: [
-            {form: formA},
-            {form: formB}
-          ]
-        }
-      },
-      {
-        form: {
-          content: [
-            {form: formC},
-            {form: formD}
-          ]
-        }
-      }
+      { heading: 'A', form: { content: ['A'] } },
+      { heading: 'B', form: { content: ['B'] } }
     ]
   }),
-  result
+  {
+    root: 'd7069b8b7bc3897bd2f887830b16683546ab69231d23dbc0fed127df3defacc1',
+    'eb94d16f10023fe29cb75d02a60eb531ffedcc7bdf7cc9aba8c25c962116b1f9': {
+      'content': [ 'A' ]
+    },
+    '5e5d60591967ee74ef2d324abc4b448578a186f26647f2aaa7249298696e6f22': {
+      'content': [ 'B' ]
+    },
+    'd7069b8b7bc3897bd2f887830b16683546ab69231d23dbc0fed127df3defacc1': {
+      'content': [
+        {
+          'digest': 'eb94d16f10023fe29cb75d02a60eb531ffedcc7bdf7cc9aba8c25c962116b1f9',
+          'heading': 'A'
+        },
+        {
+          'digest': '5e5d60591967ee74ef2d324abc4b448578a186f26647f2aaa7249298696e6f22',
+          'heading': 'B'
+        }
+      ]
+    }
+  }
 )
 ```
