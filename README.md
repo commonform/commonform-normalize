@@ -14,20 +14,20 @@ assert.deepStrictEqual(
   {
     root: 'd7069b8b7bc3897bd2f887830b16683546ab69231d23dbc0fed127df3defacc1',
     'eb94d16f10023fe29cb75d02a60eb531ffedcc7bdf7cc9aba8c25c962116b1f9': {
-      'content': [ 'A' ]
+      content: [ 'A' ]
     },
     '5e5d60591967ee74ef2d324abc4b448578a186f26647f2aaa7249298696e6f22': {
-      'content': [ 'B' ]
+      content: [ 'B' ]
     },
     'd7069b8b7bc3897bd2f887830b16683546ab69231d23dbc0fed127df3defacc1': {
-      'content': [
+      content: [
         {
-          'digest': 'eb94d16f10023fe29cb75d02a60eb531ffedcc7bdf7cc9aba8c25c962116b1f9',
-          'heading': 'A'
+          heading: 'A',
+          digest: 'eb94d16f10023fe29cb75d02a60eb531ffedcc7bdf7cc9aba8c25c962116b1f9'
         },
         {
-          'digest': '5e5d60591967ee74ef2d324abc4b448578a186f26647f2aaa7249298696e6f22',
-          'heading': 'B'
+          heading: 'B',
+          digest: '5e5d60591967ee74ef2d324abc4b448578a186f26647f2aaa7249298696e6f22'
         }
       ]
     }
